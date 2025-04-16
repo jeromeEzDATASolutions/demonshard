@@ -9,8 +9,8 @@ sprite_t sprites[SPRITES_ALLOCATED] = {
         .sprite = 1,
         .first_tile = 256, // 208 tiles
         .palette = 1,
-        .width = 20,
-        .height = 10,
+        .width = 32,
+        .height = 32,
         .picture_width = 20,
         .picture_height = 20,
         .offset_x = 0,
@@ -22,7 +22,7 @@ sprite_t sprites[SPRITES_ALLOCATED] = {
         .anim_frame_frequence = 4,
         .anim_frame_cpt = 0,
         .display = 1,
-        .original_height = 10,
+        .original_height = 32,
         .scrolling_actif = 1,
         .cache_pos_y_niveau0 = 0,
         .cache_width_pixels = 960,
@@ -92,7 +92,7 @@ void sprite_init(u16 sprite_indice)
                 
                 *REG_VRAMMOD = 1;
                 *REG_VRAMADDR = ADDR_SCB1 + ((sprites[sprite_indice].sprite + s) << 6);
-                for (u16 v = 0; v < sprites[sprite_indice].height; v++)
+                for (u16 v = sprites[sprite_indice].height; v > 0; v--)
                 {
                     // Recherche de la bonne palette
                     /*for (u16 k = 0; k < sizeof(palettes_offset); k++)
@@ -104,7 +104,9 @@ void sprite_init(u16 sprite_indice)
                         }
                     }*/
 
-                    *REG_VRAMRW = first_tile + sprites[sprite_indice].tmx[v][s] - 1;
+                    u16 new_v = 45 - v;
+
+                    *REG_VRAMRW = first_tile + sprites[sprite_indice].tmx[new_v][s] - 1;
                     *REG_VRAMRW = (sprites[sprite_indice].palette << 8);
                     //*REG_VRAMRW = (palette_tmp << 8);
                 }

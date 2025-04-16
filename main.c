@@ -52,22 +52,25 @@ int main(void) {
         u8 b1 = (bios_p1current & 16);
         u8 b2 = (bios_p1current & 32);
 
-        if (bios_p1current & CNT_UP)
+        if (u)
         {
             sprites[0].y -= 1;
             sprite_update(0);
         }
-        else if (bios_p1current & CNT_DOWN)
+        
+        if (d)
         {
             sprites[0].y += 1;
             sprite_update_y(0);
         }
-        else if (bios_p1current & CNT_LEFT)
+        
+        if (l)
         {
             sprites[0].x += 1;
             sprite_update_x(0);
         }
-        else if (bios_p1current & CNT_RIGHT)
+        
+        if (r)
         {
             sprites[0].x -= 1;
             sprite_update_x(0);
