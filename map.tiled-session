@@ -8,11 +8,11 @@
     ],
     "fileStates": {
         "map.tmx": {
-            "scale": 1.0384,
+            "scale": 0.6721,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 508.9560862865948,
-                "y": 364.0215716486903
+                "x": 496.20592173783666,
+                "y": 373.45633090313936
             }
         },
         "map.tsx": {
@@ -32,8 +32,8 @@
     ],
     "project": "map.tiled-project",
     "recentFiles": [
-        "map.tsx",
-        "map.tmx"
+        "map.tmx",
+        "map.tsx"
     ],
     "tileset.lastUsedFormat": "tsx",
     "tileset.tileSize": {
