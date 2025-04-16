@@ -1,0 +1,44 @@
+{
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
+    "activeFile": "map.tmx",
+    "expandedProjectPaths": [
+    ],
+    "fileStates": {
+        "map.tmx": {
+            "scale": 1.0384,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 508.9560862865948,
+                "y": 364.0215716486903
+            }
+        },
+        "map.tsx": {
+            "scaleInDock": 3.4306,
+            "scaleInEditor": 2.35
+        }
+    },
+    "last.imagePath": "/Users/ezdata/Documents/ngdevkit/demonshard/gfx",
+    "map.height": 45,
+    "map.lastUsedFormat": "tmx",
+    "map.tileHeight": 16,
+    "map.tileWidth": 16,
+    "map.width": 60,
+    "openFiles": [
+        "map.tmx",
+        "map.tsx"
+    ],
+    "project": "map.tiled-project",
+    "recentFiles": [
+        "map.tsx",
+        "map.tmx"
+    ],
+    "tileset.lastUsedFormat": "tsx",
+    "tileset.tileSize": {
+        "height": 16,
+        "width": 16
+    },
+    "tileset.useTransparentColor": true
+}
