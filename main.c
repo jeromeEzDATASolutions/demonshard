@@ -38,7 +38,7 @@
 #define SCREEN_HEIGHT 15
 
 // Pas de déplacement en pixels
-#define PAS 4
+#define PAS 1
 
 #include "tile_layers.c"
 #include "sprite.h"
