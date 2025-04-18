@@ -26,8 +26,21 @@
 #define CROM_TILE_OFFSET 256
 #define SPRITES_ALLOCATED 1
 
-#include "tile_layers.c"
+// Largeur d'une tile en pixels
+#define TILE_SIZE 16
 
+// Taille de la map en mémoire pour utilisation du rouleau
+#define MAP_WIDTH_PIXEL 640 // 960 - une largeur d'écran
+#define MAP_HEIGHT_PIXEL 720
+
+// Taille de l'écran visible
+#define SCREEN_WIDTH 20
+#define SCREEN_HEIGHT 15
+
+// Pas de déplacement en pixels
+#define PAS 4
+
+#include "tile_layers.c"
 #include "sprite.h"
 #include "palette.c"
 #include "sprite.c"
@@ -35,6 +48,19 @@
 int main(void) {
 
     char str[10];
+
+    typedef struct{
+        u16 x, y; // Position de la caméra
+    } Camera;
+
+    // Position of the camera, start bottom left
+    Camera camera;
+    camera.x = 0;
+    camera.y = 0;
+
+    // Position of the camero but in tiles
+    Camera camera_tiles;
+    camera_tiles.x = 0;
 
     ng_cls();
     init_palette();
@@ -54,30 +80,57 @@ int main(void) {
 
         if (u)
         {
-            sprites[0].y -= 1;
-            sprite_update(0);
-        }
-        
-        if (d)
-        {
-            sprites[0].y += 1;
-            sprite_update_y(0);
-        }
-        
-        if (l)
-        {
-            sprites[0].x += 1;
-            sprite_update_x(0);
-        }
-        
-        if (r)
-        {
-            sprites[0].x -= 1;
-            sprite_update_x(0);
+            if (camera.y < MAP_HEIGHT_PIXEL)
+            {
+                sprites[0].y -= PAS;
+                sprite_update(0);
+                camera.y += PAS;
+            }
         }
 
-        snprintf(str, 10, "T : %3d", sprites[0].tmx[0][0]);
+        if (d)
+        {
+            if (camera.y > 0)
+            {
+                sprites[0].y += PAS;
+                sprite_update_y(0);
+                camera.y -= PAS;
+            }
+        }
+
+        if (l)
+        {
+            if ( camera.x > 0 )
+            {
+                sprites[0].x += PAS;
+                sprite_update_x(0);
+                camera.x -= PAS;
+                camera_tiles.x = camera.x >> 4;
+                //sprite_display(0, 15);
+                sprite_update_tiles_left_from_one_sprite(0, camera_tiles.x);
+            }
+        }
+
+        if (r)
+        {
+            if (camera.x < MAP_WIDTH_PIXEL)
+            {
+                sprites[0].x -= PAS;
+                sprite_update_x(0);
+                camera.x += PAS;
+                camera_tiles.x = camera.x >> 4;
+                sprite_update_tiles_right_from_one_sprite(0, camera_tiles.x);
+                // Change one tile
+                sprite_change_tile_in_a_colonne(0, 1, 29, 146);
+            }
+        }
+
+        snprintf(str, 10, "C : %3d", camera.x);
         ng_text(2, 3, 0, str);
+        snprintf(str, 10, "C : %3d", camera.y);
+        ng_text(2, 5, 0, str);
+        snprintf(str, 10, "Tx : %3d", camera_tiles.x);
+        ng_text(2, 7, 0, str);
 
         ng_wait_vblank();
     }

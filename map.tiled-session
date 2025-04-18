@@ -7,16 +7,54 @@
     "expandedProjectPaths": [
     ],
     "fileStates": {
+        "/Users/ezdata/Documents/ngdevkit/neogeo/background.tsx": {
+            "scaleInDock": 1.0511
+        },
+        "/Users/ezdata/Documents/ngdevkit/neogeo/gng.tmx": {
+            "scale": 0.43,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 580.232558139535,
+                "y": 155.81395348837214
+            }
+        },
+        "/Users/ezdata/Documents/ngdevkit/neogeo/gng.tmx#tiles_nuage": {
+            "scaleInDock": 1
+        },
+        "/Users/ezdata/Documents/ngdevkit/neogeo/tiles_arthur1.tsx": {
+            "scaleInDock": 1
+        },
+        "/Users/ezdata/Documents/ngdevkit/neogeo/tiles_arthur2.tsx": {
+            "scaleInDock": 1
+        },
+        "/Users/ezdata/Documents/ngdevkit/neogeo/tiles_flottes.tsx": {
+            "scaleInDock": 1
+        },
+        "/Users/ezdata/Documents/ngdevkit/neogeo/tiles_herbe.tsx": {
+            "scaleInDock": 1
+        },
+        "/Users/ezdata/Documents/ngdevkit/neogeo/tiles_lance.tsx": {
+            "scaleInDock": 1
+        },
+        "/Users/ezdata/Documents/ngdevkit/neogeo/tiles_map.tsx": {
+            "scaleInDock": 1
+        },
+        "/Users/ezdata/Documents/ngdevkit/neogeo/tiles_pont.tsx": {
+            "scaleInDock": 1
+        },
+        "/Users/ezdata/Documents/ngdevkit/neogeo/tiles_tombe.tsx": {
+            "scaleInDock": 1
+        },
         "map.tmx": {
-            "scale": 0.6721,
+            "scale": 3.7898,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 496.20592173783666,
-                "y": 373.45633090313936
+                "x": 197.37189297588267,
+                "y": 619.6896933875139
             }
         },
         "map.tsx": {
-            "scaleInDock": 3.4306,
+            "scaleInDock": 3.362,
             "scaleInEditor": 2.35
         }
     },
@@ -27,13 +65,13 @@
     "map.tileWidth": 16,
     "map.width": 60,
     "openFiles": [
-        "map.tmx",
-        "map.tsx"
+        "map.tmx"
     ],
     "project": "map.tiled-project",
     "recentFiles": [
         "map.tmx",
-        "map.tsx"
+        "map.tsx",
+        "/Users/ezdata/Documents/ngdevkit/neogeo/gng.tmx"
     ],
     "tileset.lastUsedFormat": "tsx",
     "tileset.tileSize": {

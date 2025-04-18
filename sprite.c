@@ -131,6 +131,101 @@ void sprite_init(u16 sprite_indice)
     }
 }
 
+void sprite_change_tile_in_a_colonne(u16 sprite_indice, u16 indice, u16 VRAMSpriteDrawStartIndex, u16 new_tile)
+{
+    *REG_VRAMMOD = 1;
+    *REG_VRAMADDR = ADDR_SCB1 + ((sprites[sprite_indice].sprite + indice) << 6) + (VRAMSpriteDrawStartIndex << 1);
+    *REG_VRAMRW = 256 + new_tile - 1;
+    *REG_VRAMRW = (sprites[sprite_indice].palette << 8);
+}
+
+/**
+ * Permet d'actualiser à partir du TMX une colonne spécifique d'un sprite
+ * et surtout hide tous les autres sprites après
+ */
+void sprite_update_tiles_left_from_one_sprite(u16 sprite_indice, u16 indice)
+{
+    u16 first_tile = 0;
+    u16 tmp;
+
+    tmp = indice;
+    if (tmp >= 32)
+    {
+        tmp -= 32;
+    }
+    if (tmp >= 64)
+    {
+        tmp -= 64;
+    }
+
+    // On prend en compte l'offset pour se positionner sur la portion de l'image complete
+    first_tile = sprites[sprite_indice].first_tile + sprites[sprite_indice].offset_x;
+    first_tile += sprites[sprite_indice].first_tile_with_offset_y;
+
+    *REG_VRAMMOD = 1;
+    *REG_VRAMADDR = ADDR_SCB1 + ((sprites[sprite_indice].sprite + tmp) << 6);
+    for (u16 v = sprites[sprite_indice].height; v > 0; v--)
+    {
+        u16 new_v = 45 - v;
+        *REG_VRAMRW = first_tile + sprites[sprite_indice].tmx[new_v][indice] - 1;
+        *REG_VRAMRW = (sprites[sprite_indice].palette << 8);
+    }
+}
+
+/**
+ * Permet d'actualiser à partir du TMX une colonne spécifique d'un sprite
+ * et surtout hide tous les autres sprites après
+ */
+void sprite_update_tiles_right_from_one_sprite(u16 sprite_indice, u16 indice)
+{
+    u16 first_tile = 0;
+    u16 tmp, x;
+    x = indice + 20;
+
+    tmp = indice + 20;
+    if (tmp >= 32)
+    {
+        tmp -= 32;
+    }
+    if (tmp >= 64)
+    {
+        tmp -= 64;
+    }
+
+    // On prend en compte l'offset pour se positionner sur la portion de l'image complete
+    first_tile = sprites[sprite_indice].first_tile + sprites[sprite_indice].offset_x;
+    first_tile += sprites[sprite_indice].first_tile_with_offset_y;
+
+    *REG_VRAMMOD = 1;
+    *REG_VRAMADDR = ADDR_SCB1 + ((sprites[sprite_indice].sprite + tmp) << 6);
+    for (u16 v = sprites[sprite_indice].height; v > 0; v--)
+    {
+        u16 new_v = 45 - v;
+        *REG_VRAMRW = first_tile + sprites[sprite_indice].tmx[new_v][x] - 1;
+        *REG_VRAMRW = (sprites[sprite_indice].palette << 8);
+    }
+}
+
+/**
+ * Hide a sprite
+ * indice commence à 0 à partir du sprite passé en paramètre
+ */
+void sprite_hide(u16 sprite_indice, u16 indice)
+{
+    *REG_VRAMADDR = ADDR_SCB3 + sprites[sprite_indice].sprite + indice;
+    *REG_VRAMRW = 0;
+}
+
+/**
+ * Display a sprite
+ * indice comment à 0 à partir du sprite passé en paramètre
+ */
+void sprite_display(u16 sprite_indice, u16 indice)
+{
+    *REG_VRAMADDR = ADDR_SCB3 + sprites[sprite_indice].sprite + indice;
+    *REG_VRAMRW = (240 << 7);
+}
+
 void sprite_update_tiles(u16 sprite_indice)
 {
     u16 first_tile = 0;

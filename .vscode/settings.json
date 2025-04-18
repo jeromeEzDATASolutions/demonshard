@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "sprite.h": "c",
+        "*.pal": "c"
+    }
+}
