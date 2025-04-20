@@ -28,7 +28,7 @@ if (file_exists($file)) {
                 if ( isset($value["properties"]["property"][1]["@attributes"]["name"]) && $value["properties"]["property"][1]["@attributes"]["name"] == "width" ) {
                     $nombre_tiles_width = $value["properties"]["property"][1]["@attributes"]["value"];
                 }
-                $nombre_tiles_height = 45;
+                $nombre_tiles_height = 60;
                 if ( isset($value["properties"]["property"][0]["@attributes"]["name"]) && $value["properties"]["property"][0]["@attributes"]["name"] == "height" ) {
                     $nombre_tiles_height = $value["properties"]["property"][0]["@attributes"]["value"];
                 }

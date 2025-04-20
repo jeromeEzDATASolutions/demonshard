@@ -113,7 +113,7 @@ void sprite_init(u16 sprite_indice)
                 *REG_VRAMADDR = ADDR_SCB1 + ((sprites[sprite_indice].sprite + s) << 6);
                 for (u16 v = sprites[sprite_indice].height; v > 0; v--)
                 {
-                    u16 new_v = 45 - v;
+                    u16 new_v = 60 - v;
                     *REG_VRAMRW = first_tile + sprites[sprite_indice].tmx[new_v][s] - 1;
                     *REG_VRAMRW = (sprites[sprite_indice].palette << 8);
                     //*REG_VRAMRW = (palette_tmp << 8);

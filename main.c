@@ -91,23 +91,22 @@ int main(void) {
                 camera.y += PAS;
                 camera_tiles.y = camera.y >> 4;
                 u16 row_to_update = 0;
+                u16 tmp = 0;
 
                 // Update first tiles of each sprite
                 if (camera_tiles.y >= 0)
                 {
-                    if (camera_tiles.y >= 0 && camera_tiles.y < 16)
-                    {
-                        row_to_update = 15 - camera_tiles.y;
-                        for (u16 i = 0; i < sprites[0].width; i++)
-                        {
-                            sprite_change_tile_in_a_colonne(0, i, row_to_update, sprites[0].tmx[row_to_update + 13][i]);
+                    if (camera_tiles.y < 16 ){
+                        row_to_update = 32 - (camera_tiles.y + 15);
+                        ng_text(2, 5, 0, str);
+                        for (u16 i = 0; i < sprites[0].width; i++){
+                            sprite_change_tile_in_a_colonne(0, i, row_to_update, sprites[0].tmx[(60 - 32) + row_to_update][i]);
                         }
                     }
-                    else if (camera_tiles.y > 16 && camera_tiles.y < 32){
-                        row_to_update = 32 - (camera_tiles.y - 16);
-                        for (u16 i = 0; i < sprites[0].width; i++)
-                        {
-                            sprite_change_tile_in_a_colonne(0, i, row_to_update, sprites[0].tmx[row_to_update-19][i]);
+                    else if (camera_tiles.y >= 16 && camera_tiles.y < 64){
+                        row_to_update = 32 - (camera_tiles.y - 15);
+                        for (u16 i = 0; i < sprites[0].width; i++){
+                            sprite_change_tile_in_a_colonne(0, i, row_to_update, sprites[0].tmx[row_to_update-4][i]);
                         }
                     }
                 }
