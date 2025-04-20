@@ -31,7 +31,7 @@ sprite_t sprites[SPRITES_ALLOCATED] = {
     {
         // Hero de Karim
         .type = SPRITES_TYPE_STANDARD,
-        .actif = 1,
+        .actif = 0,
         .sprite = 33,
         .first_tile = 656,
         .palette = 2,
@@ -58,7 +58,7 @@ sprite_t sprites[SPRITES_ALLOCATED] = {
 
 void sprite_init_tmx(u16 sprite_indice)
 {
-    for (u16 j = 0; j < 45; j++)
+    for (u16 j = 0; j < 60; j++)
     {
         for (u16 i = 0; i < 60; i++)
         {
@@ -106,7 +106,7 @@ void sprite_init(u16 sprite_indice)
         }
         else if (sprites[sprite_indice].type == 2){
 
-            // On initialise les tiles depuis le TMX : 60 colonnes et 45 lignes
+            // On initialise les tiles depuis le TMX : 60 colonnes et 60 lignes
             for (u16 s = 0; s < sprites[sprite_indice].width; s++){
                 
                 *REG_VRAMMOD = 1;
@@ -114,7 +114,6 @@ void sprite_init(u16 sprite_indice)
                 for (u16 v = sprites[sprite_indice].height; v > 0; v--)
                 {
                     u16 new_v = 45 - v;
-
                     *REG_VRAMRW = first_tile + sprites[sprite_indice].tmx[new_v][s] - 1;
                     *REG_VRAMRW = (sprites[sprite_indice].palette << 8);
                     //*REG_VRAMRW = (palette_tmp << 8);

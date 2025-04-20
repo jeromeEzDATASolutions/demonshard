@@ -34,7 +34,7 @@
 
 // Taille de la map en mémoire pour utilisation du rouleau
 #define MAP_WIDTH_PIXEL 640 // 960 - une largeur d'écran
-#define MAP_HEIGHT_PIXEL 480 // 720 - une hauteur d'écran
+#define MAP_HEIGHT_PIXEL 720 // 960 - une hauteur d'écran
 
 // Taille de l'écran visible
 #define SCREEN_WIDTH 20
@@ -103,7 +103,7 @@ int main(void) {
                             sprite_change_tile_in_a_colonne(0, i, row_to_update, sprites[0].tmx[row_to_update + 13][i]);
                         }
                     }
-                    else if (camera_tiles.y > 16 && camera_tiles.y <= 29){
+                    else if (camera_tiles.y > 16 && camera_tiles.y < 32){
                         row_to_update = 32 - (camera_tiles.y - 16);
                         for (u16 i = 0; i < sprites[0].width; i++)
                         {
