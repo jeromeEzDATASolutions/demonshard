@@ -1,6 +1,6 @@
 typedef struct _sprite_t
 {
-    u8 type; // 0 = sprite standard, 1 = background from TMX
+    u8 type;  // 1 = sprite standard, 2 = background from TMX
     u8 actif; // Désactivation complete du sprite
 
     u16 sprite;     // Id du first sprite 43

@@ -24,14 +24,17 @@
 #include <stdio.h>
 
 #define CROM_TILE_OFFSET 256
-#define SPRITES_ALLOCATED 1
+
+#define SPRITES_ALLOCATED 2
+#define SPRITES_TYPE_BACKGROUND 2
+#define SPRITES_TYPE_STANDARD 1
 
 // Largeur d'une tile en pixels
 #define TILE_SIZE 16
 
 // Taille de la map en mémoire pour utilisation du rouleau
 #define MAP_WIDTH_PIXEL 640 // 960 - une largeur d'écran
-#define MAP_HEIGHT_PIXEL 720
+#define MAP_HEIGHT_PIXEL 480 // 720 - une hauteur d'écran
 
 // Taille de l'écran visible
 #define SCREEN_WIDTH 20
@@ -41,8 +44,8 @@
 #define PAS 1
 
 #include "tile_layers.c"
-#include "sprite.h"
 #include "palette.c"
+#include "sprite.h"
 #include "sprite.c"
 
 int main(void) {
@@ -50,15 +53,15 @@ int main(void) {
     char str[10];
 
     typedef struct{
-        u16 x, y; // Position de la caméra
+        s16 x, y; // Position de la caméra
     } Camera;
 
-    // Position of the camera, start bottom left
+    // Position of the camera in pixels, start bottom left
     Camera camera;
     camera.x = 0;
     camera.y = 0;
 
-    // Position of the camero but in tiles
+    // Position of the camera in tiles
     Camera camera_tiles;
     camera_tiles.x = 0;
 
@@ -67,6 +70,7 @@ int main(void) {
 
     sprite_init_tmx(0);
     sprite_init(0);
+    sprite_init(1);
 
     for (;;)
     {
@@ -80,11 +84,33 @@ int main(void) {
 
         if (u)
         {
-            if (camera.y < MAP_HEIGHT_PIXEL)
+            if (camera.y < MAP_HEIGHT_PIXEL+16)
             {
                 sprites[0].y -= PAS;
                 sprite_update(0);
                 camera.y += PAS;
+                camera_tiles.y = camera.y >> 4;
+                u16 row_to_update = 0;
+
+                // Update first tiles of each sprite
+                if (camera_tiles.y >= 0)
+                {
+                    if (camera_tiles.y >= 0 && camera_tiles.y < 16)
+                    {
+                        row_to_update = 15 - camera_tiles.y;
+                        for (u16 i = 0; i < sprites[0].width; i++)
+                        {
+                            sprite_change_tile_in_a_colonne(0, i, row_to_update, sprites[0].tmx[row_to_update + 13][i]);
+                        }
+                    }
+                    else if (camera_tiles.y > 16 && camera_tiles.y <= 29){
+                        row_to_update = 32 - (camera_tiles.y - 16);
+                        for (u16 i = 0; i < sprites[0].width; i++)
+                        {
+                            sprite_change_tile_in_a_colonne(0, i, row_to_update, sprites[0].tmx[row_to_update-19][i]);
+                        }
+                    }
+                }
             }
         }
 
@@ -95,6 +121,7 @@ int main(void) {
                 sprites[0].y += PAS;
                 sprite_update_y(0);
                 camera.y -= PAS;
+                camera_tiles.y = camera.y >> 4;
             }
         }
 
@@ -106,7 +133,6 @@ int main(void) {
                 sprite_update_x(0);
                 camera.x -= PAS;
                 camera_tiles.x = camera.x >> 4;
-                //sprite_display(0, 15);
                 sprite_update_tiles_left_from_one_sprite(0, camera_tiles.x);
             }
         }
@@ -120,17 +146,17 @@ int main(void) {
                 camera.x += PAS;
                 camera_tiles.x = camera.x >> 4;
                 sprite_update_tiles_right_from_one_sprite(0, camera_tiles.x);
-                // Change one tile
-                sprite_change_tile_in_a_colonne(0, 1, 29, 146);
             }
         }
 
-        snprintf(str, 10, "C : %3d", camera.x);
+        // snprintf(str, 10, "C : %3d", camera.y);
+        // ng_text(2, 3, 0, str);
+        // snprintf(str, 10, "C : %3d", camera.x);
+        // ng_text(2, 3, 0, str);
+        // snprintf(str, 10, "Tx : %3d", camera_tiles.x);
+        // ng_text(2, 7, 0, str);
+        snprintf(str, 10, "Ty : %3d", camera_tiles.y);
         ng_text(2, 3, 0, str);
-        snprintf(str, 10, "C : %3d", camera.y);
-        ng_text(2, 5, 0, str);
-        snprintf(str, 10, "Tx : %3d", camera_tiles.x);
-        ng_text(2, 7, 0, str);
 
         ng_wait_vblank();
     }

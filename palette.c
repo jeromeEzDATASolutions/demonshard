@@ -7,12 +7,14 @@ const u16 clut[][16] = {
     /// first 16 colors palette for the fix tiles
     {0x8000, 0x0fff, 0x0333, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000},
 #include "sprites/tileset_map.pal" // Palette 1
+#include "sprites/hero.pal" // Palette 1
 };
 
 const u16 palette_backup[][16] = {
     /// first 16 colors palette for the fix tiles
     {0x8000, 0x0fff, 0x0333, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000},
 #include "sprites/tileset_map.pal" // Palette 1
+#include "sprites/hero.pal" // Palette 2
 };
 
 const u16 paletes_from_tile[][2] = {

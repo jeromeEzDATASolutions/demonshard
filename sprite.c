@@ -4,7 +4,7 @@
 sprite_t sprites[SPRITES_ALLOCATED] = {
     {
         // Tileset for the background - test d'affichage
-        .type = 1,
+        .type = SPRITES_TYPE_BACKGROUND,
         .actif = 1,
         .sprite = 1,
         .first_tile = 256, // 208 tiles
@@ -26,6 +26,32 @@ sprite_t sprites[SPRITES_ALLOCATED] = {
         .scrolling_actif = 1,
         .cache_pos_y_niveau0 = 0,
         .cache_width_pixels = 960,
+        .tmx = {},
+    },
+    {
+        // Hero de Karim
+        .type = SPRITES_TYPE_STANDARD,
+        .actif = 1,
+        .sprite = 33,
+        .first_tile = 656,
+        .palette = 2,
+        .width = 4,
+        .height = 4,
+        .picture_width = 4,
+        .picture_height = 4,
+        .offset_x = 0,
+        .offset_y = 0,
+        .first_tile_with_offset_y = 0, // offset_y * picture_width
+        .x = 90,
+        .y = 28,
+        .sens = 1,
+        .anim_frame_frequence = 4,
+        .anim_frame_cpt = 0,
+        .display = 1,
+        .original_height = 4,
+        .scrolling_actif = 1,
+        .cache_pos_y_niveau0 = 0,
+        .cache_width_pixels = 64,
         .tmx = {},
     },
 };
@@ -52,24 +78,21 @@ void sprite_init(u16 sprite_indice)
 
     if (sprites[sprite_indice].actif == 1){
 
-        if (sprites[sprite_indice].display == 0 ) {
+        if (sprites[sprite_indice].display == 0 )
+        {
             sprites[sprite_indice].height = 0;
         }
 
-        if (sprites[sprite_indice].display == 1){
+        if (sprites[sprite_indice].display == 1)
+        {
             sprites[sprite_indice].height = sprites[sprite_indice].original_height;
         }
 
-        if (sprites[sprite_indice].type == 0){
+        // On prend en compte l'offset pour se positionner sur la portion de l'image complete
+        first_tile = sprites[sprite_indice].first_tile + sprites[sprite_indice].offset_x;
+        first_tile += sprites[sprite_indice].first_tile_with_offset_y;
 
-            // On initialise les tiles depuis l'image
-
-            // On prend en compte l'offset pour se positionner sur la portion de l'image complete
-            first_tile = sprites[sprite_indice].first_tile + sprites[sprite_indice].offset_x;
-            first_tile += sprites[sprite_indice].first_tile_with_offset_y;
-
-            // snprintf(str, 10, "W %3d", sprites[sprite_indice].picture_width);
-            // ng_text(2, 3, 0, str);
+        if (sprites[sprite_indice].type == 1){
 
             for (u16 s = 0; s < sprites[sprite_indice].width; s++)
             {
@@ -81,11 +104,7 @@ void sprite_init(u16 sprite_indice)
                 }
             }
         }
-        else if (sprites[sprite_indice].type == 1){
-
-            // On prend en compte l'offset pour se positionner sur la portion de l'image complete
-            first_tile = sprites[sprite_indice].first_tile + sprites[sprite_indice].offset_x;
-            first_tile += sprites[sprite_indice].first_tile_with_offset_y;
+        else if (sprites[sprite_indice].type == 2){
 
             // On initialise les tiles depuis le TMX : 60 colonnes et 45 lignes
             for (u16 s = 0; s < sprites[sprite_indice].width; s++){
@@ -94,16 +113,6 @@ void sprite_init(u16 sprite_indice)
                 *REG_VRAMADDR = ADDR_SCB1 + ((sprites[sprite_indice].sprite + s) << 6);
                 for (u16 v = sprites[sprite_indice].height; v > 0; v--)
                 {
-                    // Recherche de la bonne palette
-                    /*for (u16 k = 0; k < sizeof(palettes_offset); k++)
-                    {
-                        if (plane->tmx[v][s] < palettes_offset[k][0])
-                        {
-                            palette_tmp = palettes_offset[k][1];
-                            break;
-                        }
-                    }*/
-
                     u16 new_v = 45 - v;
 
                     *REG_VRAMRW = first_tile + sprites[sprite_indice].tmx[new_v][s] - 1;
