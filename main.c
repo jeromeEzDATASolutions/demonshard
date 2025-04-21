@@ -25,6 +25,9 @@
 
 #define CROM_TILE_OFFSET 256
 
+// Pas de déplacement en pixels
+#define PAS 1
+
 #define SPRITES_ALLOCATED 2
 #define SPRITES_TYPE_BACKGROUND 2
 #define SPRITES_TYPE_STANDARD 1
@@ -32,20 +35,15 @@
 // Largeur d'une tile en pixels
 #define TILE_SIZE 16
 
-// Taille de la map en mémoire pour utilisation du rouleau
-#define MAP_WIDTH_PIXEL 640  // 960 - une largeur d'écran
-#define MAP_HEIGHT_PIXEL 720 // 960 - une hauteur d'écran
-#define MAP_WIDTH_TILES 60
-#define MAP_HEIGHT_TILES 75
-
 // Taille de l'écran visible
 #define SCREEN_WIDTH 20
 #define SCREEN_HEIGHT 15
 
-// Pas de déplacement en pixels
-#define PAS 4
-
 #include "tile_layers.c"
+
+#define MAP_WIDTH_PIXEL (MAP_WIDTH_TILES * 16) - (SCREEN_WIDTH * 16)    // 960 - une largeur d'écran
+#define MAP_HEIGHT_PIXEL (MAP_HEIGHT_TILES * 16) - (SCREEN_HEIGHT * 16) // 960 - une hauteur d'écran
+
 #include "palette.c"
 #include "sprite.h"
 #include "sprite.c"
@@ -98,18 +96,32 @@ int main(void) {
                 // Update first tiles of each sprite
                 if (camera_tiles.y >= 0)
                 {
-                    if (camera_tiles.y < 16 ){
+                    if (camera_tiles.y >= 0 && camera_tiles.y < 16)
+                    {
                         row_to_update = 32 - (camera_tiles.y + 15);
                         for (u16 i = 0; i < sprites[0].width; i++){
                             sprite_change_tile_in_a_colonne(0, i, row_to_update, sprites[0].tmx[(MAP_HEIGHT_TILES - 32) + row_to_update][i]);
-                            //sprite_change_tile_in_a_colonne(0, i, row_to_update, 147);
                         }
                     }
-                    else if (camera_tiles.y >= 16 && camera_tiles.y < 80){
-                        row_to_update = 32 - (camera_tiles.y - 15);
-                        for (u16 i = 0; i < sprites[0].width; i++){
-                            sprite_change_tile_in_a_colonne(0, i, row_to_update, sprites[0].tmx[row_to_update-4][i]);
+                    else if (camera_tiles.y >= 16 && camera_tiles.y < 59){
+
+                        if (camera_tiles.y < 48){
+                            row_to_update = 32 - (camera_tiles.y - 15);
                         }
+                        else if (camera_tiles.y < 100) // ???????
+                        {
+                            row_to_update = 64 - (camera_tiles.y - 15);
+                        }
+
+                        for (u16 i = 0; i < sprites[0].width; i++)
+                        {
+                            sprite_change_tile_in_a_colonne(0, i, row_to_update, sprites[0].tmx[(MAP_HEIGHT_TILES - 32) - (camera_tiles.y - 15)][i]);
+                        }
+
+                        /*snprintf(str, 10, "Row : %3d", row_to_update);
+                        ng_text(2, 3, 0, str);
+                        snprintf(str, 10, "Cty : %3d", camera_tiles.y);
+                        ng_text(2, 5, 0, str);*/
                     }
                 }
             }
@@ -146,18 +158,11 @@ int main(void) {
                 sprite_update_x(0);
                 camera.x += PAS;
                 camera_tiles.x = camera.x >> 4;
+                snprintf(str, 10, "cam : %3d", camera_tiles.x);
+                ng_text(2, 3, 0, str);
                 sprite_update_tiles_right_from_one_sprite(0, camera_tiles.x);
             }
         }
-
-        // snprintf(str, 10, "C : %3d", camera.y);
-        // ng_text(2, 3, 0, str);
-        // snprintf(str, 10, "C : %3d", camera.x);
-        // ng_text(2, 3, 0, str);
-        // snprintf(str, 10, "Tx : %3d", camera_tiles.x);
-        // ng_text(2, 7, 0, str);
-        snprintf(str, 10, "Ty : %3d", camera_tiles.y);
-        ng_text(2, 3, 0, str);
 
         ng_wait_vblank();
     }

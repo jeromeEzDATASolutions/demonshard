@@ -24,11 +24,14 @@ if (file_exists($file)) {
 
             if ( $value["@attributes"]["name"] == "decor"){
 
-                $nombre_tiles_width = 60;
+                echo "#define MAP_WIDTH_TILES " . $value["@attributes"]["width"] . "\n";
+                echo "#define MAP_HEIGHT_TILES " . $value["@attributes"]["height"] . "\n";
+
+                $nombre_tiles_width = $value["@attributes"]["width"];
                 if ( isset($value["properties"]["property"][1]["@attributes"]["name"]) && $value["properties"]["property"][1]["@attributes"]["name"] == "width" ) {
                     $nombre_tiles_width = $value["properties"]["property"][1]["@attributes"]["value"];
                 }
-                $nombre_tiles_height = 75;
+                $nombre_tiles_height = $value["@attributes"]["height"];
                 if ( isset($value["properties"]["property"][0]["@attributes"]["name"]) && $value["properties"]["property"][0]["@attributes"]["name"] == "height" ) {
                     $nombre_tiles_height = $value["properties"]["property"][0]["@attributes"]["value"];
                 }
@@ -36,7 +39,7 @@ if (file_exists($file)) {
                 $data = $value["data"];
                 echo "const u16 tmx_" . $value["@attributes"]["name"] . "[".$nombre_tiles_height."][".$nombre_tiles_width."] = {\n";
                 $ligne_cpt = 0;
-                
+
                 $cpt = 0;
                 foreach (explode("\n", $data) as $ligne) {
 

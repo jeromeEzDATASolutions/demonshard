@@ -1,6 +1,7 @@
 {
     "files.associations": {
         "sprite.h": "c",
-        "*.pal": "c"
+        "*.pal": "c",
+        "stdio.h": "c"
     }
 }

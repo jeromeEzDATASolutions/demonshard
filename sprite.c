@@ -25,13 +25,13 @@ sprite_t sprites[SPRITES_ALLOCATED] = {
         .original_height = 32,
         .scrolling_actif = 1,
         .cache_pos_y_niveau0 = 0,
-        .cache_width_pixels = 960,
+        .cache_width_pixels = 960, // Not used
         .tmx = {},
     },
     {
         // Hero de Karim
         .type = SPRITES_TYPE_STANDARD,
-        .actif = 0,
+        .actif = 1,
         .sprite = 33,
         .first_tile = 656,
         .palette = 2,
@@ -76,7 +76,7 @@ void sprite_init(u16 sprite_indice)
     *REG_VRAMMOD = 1;
     char str[10];
 
-    if (sprites[sprite_indice].actif == SPRITES_TYPE_STANDARD){
+    if (sprites[sprite_indice].actif == 1){
 
         if (sprites[sprite_indice].display == 0 )
         {
@@ -92,8 +92,8 @@ void sprite_init(u16 sprite_indice)
         first_tile = sprites[sprite_indice].first_tile + sprites[sprite_indice].offset_x;
         first_tile += sprites[sprite_indice].first_tile_with_offset_y;
 
-        if (sprites[sprite_indice].type == 1){
-
+        if (sprites[sprite_indice].type == SPRITES_TYPE_STANDARD)
+        {
             for (u16 s = 0; s < sprites[sprite_indice].width; s++)
             {
                 *REG_VRAMADDR = ADDR_SCB1 + ((sprites[sprite_indice].sprite + s) << 6);
@@ -174,7 +174,7 @@ void sprite_update_tiles_left_from_one_sprite(u16 sprite_indice, u16 indice)
     *REG_VRAMADDR = ADDR_SCB1 + ((sprites[sprite_indice].sprite + tmp) << 6);
     for (u16 v = sprites[sprite_indice].height; v > 0; v--)
     {
-        u16 new_v = 45 - v;
+        u16 new_v = MAP_HEIGHT_TILES - v;
         *REG_VRAMRW = first_tile + sprites[sprite_indice].tmx[new_v][indice] - 1;
         *REG_VRAMRW = (sprites[sprite_indice].palette << 8);
     }
@@ -186,30 +186,32 @@ void sprite_update_tiles_left_from_one_sprite(u16 sprite_indice, u16 indice)
  */
 void sprite_update_tiles_right_from_one_sprite(u16 sprite_indice, u16 indice)
 {
+    char str[10];
     u16 first_tile = 0;
-    u16 tmp, x;
+    u16 spriteIndice, x;
     x = indice + 20;
 
-    tmp = indice + 20;
-    if (tmp >= 32)
+    spriteIndice = indice + 20;
+
+    if (spriteIndice >= 32)
     {
-        tmp -= 32;
+        spriteIndice -= 32;
     }
-    if (tmp >= 64)
-    {
-        tmp -= 64;
-    }
+
+    snprintf(str, 10, "ind : %3d", spriteIndice);
+    ng_text(2, 7, 0, str);
 
     // On prend en compte l'offset pour se positionner sur la portion de l'image complete
     first_tile = sprites[sprite_indice].first_tile + sprites[sprite_indice].offset_x;
     first_tile += sprites[sprite_indice].first_tile_with_offset_y;
 
     *REG_VRAMMOD = 1;
-    *REG_VRAMADDR = ADDR_SCB1 + ((sprites[sprite_indice].sprite + tmp) << 6);
+    *REG_VRAMADDR = ADDR_SCB1 + ((sprites[sprite_indice].sprite + spriteIndice) << 6);
     for (u16 v = sprites[sprite_indice].height; v > 0; v--)
     {
-        u16 new_v = 45 - v;
+        u16 new_v = MAP_HEIGHT_TILES - v;
         *REG_VRAMRW = first_tile + sprites[sprite_indice].tmx[new_v][x] - 1;
+        //*REG_VRAMRW = first_tile + 127 - 1;
         *REG_VRAMRW = (sprites[sprite_indice].palette << 8);
     }
 }
