@@ -33,15 +33,17 @@
 #define TILE_SIZE 16
 
 // Taille de la map en mémoire pour utilisation du rouleau
-#define MAP_WIDTH_PIXEL 640 // 960 - une largeur d'écran
+#define MAP_WIDTH_PIXEL 640  // 960 - une largeur d'écran
 #define MAP_HEIGHT_PIXEL 720 // 960 - une hauteur d'écran
+#define MAP_WIDTH_TILES 60
+#define MAP_HEIGHT_TILES 75
 
 // Taille de l'écran visible
 #define SCREEN_WIDTH 20
 #define SCREEN_HEIGHT 15
 
 // Pas de déplacement en pixels
-#define PAS 1
+#define PAS 4
 
 #include "tile_layers.c"
 #include "palette.c"
@@ -98,12 +100,12 @@ int main(void) {
                 {
                     if (camera_tiles.y < 16 ){
                         row_to_update = 32 - (camera_tiles.y + 15);
-                        ng_text(2, 5, 0, str);
                         for (u16 i = 0; i < sprites[0].width; i++){
-                            sprite_change_tile_in_a_colonne(0, i, row_to_update, sprites[0].tmx[(60 - 32) + row_to_update][i]);
+                            sprite_change_tile_in_a_colonne(0, i, row_to_update, sprites[0].tmx[(MAP_HEIGHT_TILES - 32) + row_to_update][i]);
+                            //sprite_change_tile_in_a_colonne(0, i, row_to_update, 147);
                         }
                     }
-                    else if (camera_tiles.y >= 16 && camera_tiles.y < 64){
+                    else if (camera_tiles.y >= 16 && camera_tiles.y < 80){
                         row_to_update = 32 - (camera_tiles.y - 15);
                         for (u16 i = 0; i < sprites[0].width; i++){
                             sprite_change_tile_in_a_colonne(0, i, row_to_update, sprites[0].tmx[row_to_update-4][i]);

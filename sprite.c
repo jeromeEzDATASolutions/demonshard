@@ -58,9 +58,9 @@ sprite_t sprites[SPRITES_ALLOCATED] = {
 
 void sprite_init_tmx(u16 sprite_indice)
 {
-    for (u16 j = 0; j < 60; j++)
+    for (u16 j = 0; j < MAP_HEIGHT_TILES; j++)
     {
-        for (u16 i = 0; i < 60; i++)
+        for (u16 i = 0; i < MAP_WIDTH_TILES; i++)
         {
             sprites[sprite_indice].tmx[j][i] = tmx_decor[j][i];
         }
@@ -76,7 +76,7 @@ void sprite_init(u16 sprite_indice)
     *REG_VRAMMOD = 1;
     char str[10];
 
-    if (sprites[sprite_indice].actif == 1){
+    if (sprites[sprite_indice].actif == SPRITES_TYPE_STANDARD){
 
         if (sprites[sprite_indice].display == 0 )
         {
@@ -104,7 +104,7 @@ void sprite_init(u16 sprite_indice)
                 }
             }
         }
-        else if (sprites[sprite_indice].type == 2){
+        else if (sprites[sprite_indice].type == SPRITES_TYPE_BACKGROUND){
 
             // On initialise les tiles depuis le TMX : 60 colonnes et 60 lignes
             for (u16 s = 0; s < sprites[sprite_indice].width; s++){
@@ -113,7 +113,7 @@ void sprite_init(u16 sprite_indice)
                 *REG_VRAMADDR = ADDR_SCB1 + ((sprites[sprite_indice].sprite + s) << 6);
                 for (u16 v = sprites[sprite_indice].height; v > 0; v--)
                 {
-                    u16 new_v = 60 - v;
+                    u16 new_v = MAP_HEIGHT_TILES - v;
                     *REG_VRAMRW = first_tile + sprites[sprite_indice].tmx[new_v][s] - 1;
                     *REG_VRAMRW = (sprites[sprite_indice].palette << 8);
                     //*REG_VRAMRW = (palette_tmp << 8);
