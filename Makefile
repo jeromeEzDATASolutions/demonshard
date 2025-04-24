@@ -43,6 +43,18 @@ sprites/tileset_map.pal: sprites/tileset_map.png
 	$(PALTOOL) $< -o $@
 
 # -------------------------------------
+# Tileset Mario
+# -------------------------------------
+sprites/tileset_mario.png: gfx/tileset_mario.png | sprites
+	$(CONVERT) $^ -crop 128x128+0+0 +repage $@
+
+sprites/tileset_mario.c1 sprites/tileset_mario.c2: sprites/tileset_mario.png
+	$(TILETOOL) --sprite -c $< -o $@ $(@:%.c1=%).c2
+
+sprites/tileset_mario.pal: sprites/tileset_mario.png
+	$(PALTOOL) $< -o $@
+
+# -------------------------------------
 # Hero de Karim
 # -------------------------------------
 sprites/hero.png: gfx/hero.png | sprites
@@ -64,6 +76,7 @@ $(ELF):	$(OBJS:%=%.o)
 
 main.c: \
 	sprites/tileset_map.pal \
+	sprites/tileset_mario.pal \
 	sprites/hero.pal \
 
 # sound driver ROM: ngdevkit's nullsound
@@ -79,12 +92,14 @@ $(VROM): | rom
 CROMSIZE:=1048576
 $(CROM1): $(ASSETS)/rom/c1.bin \
 	sprites/tileset_map.c1 \
+	sprites/tileset_mario.c1 \
 	sprites/hero.c1 \
 	| rom
 	cat $(ASSETS)/rom/c1.bin $(filter %.c1,$^) > $@ && $(TRUNCATE) -s $(CROMSIZE) $@
 
 $(CROM2): $(ASSETS)/rom/c2.bin \
 	sprites/tileset_map.c2 \
+	sprites/tileset_mario.c2 \
 	sprites/hero.c2 \
 	| rom
 	cat $(ASSETS)/rom/c2.bin $(filter %.c2,$^) > $@ && $(TRUNCATE) -s $(CROMSIZE) $@

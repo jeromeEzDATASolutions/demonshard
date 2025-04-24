@@ -26,11 +26,11 @@
 #define CROM_TILE_OFFSET 256
 
 // Pas de déplacement en pixels
-#define PAS 1
+#define PAS 2
 
-#define SPRITES_ALLOCATED 2
-#define SPRITES_TYPE_BACKGROUND 2
+#define SPRITES_ALLOCATED 3
 #define SPRITES_TYPE_STANDARD 1
+#define SPRITES_TYPE_BACKGROUND1 2 // TMX Mario
 
 // Largeur d'une tile en pixels
 #define TILE_SIZE 16
@@ -68,9 +68,8 @@ int main(void) {
     ng_cls();
     init_palette();
 
-    sprite_init_tmx(0);
     sprite_init(0);
-    sprite_init(1);
+    //sprite_init(1);
 
     for (;;)
     {
@@ -100,7 +99,7 @@ int main(void) {
                     {
                         row_to_update = 32 - (camera_tiles.y + 15);
                         for (u16 i = 0; i < sprites[0].width; i++){
-                            sprite_change_tile_in_a_colonne(0, i, row_to_update, sprites[0].tmx[(MAP_HEIGHT_TILES - 32) + row_to_update][i]);
+                            sprite_change_tile_in_a_colonne(0, i, row_to_update, tmx_mario[(MAP_HEIGHT_TILES - 32) + row_to_update][i]);
                         }
                     }
                     else if (camera_tiles.y >= 16 && camera_tiles.y < 59){
@@ -115,7 +114,7 @@ int main(void) {
 
                         for (u16 i = 0; i < sprites[0].width; i++)
                         {
-                            sprite_change_tile_in_a_colonne(0, i, row_to_update, sprites[0].tmx[(MAP_HEIGHT_TILES - 32) - (camera_tiles.y - 15)][i]);
+                            sprite_change_tile_in_a_colonne(0, i, row_to_update, tmx_mario[(MAP_HEIGHT_TILES - 32) - (camera_tiles.y - 15)][i]);
                         }
 
                         /*snprintf(str, 10, "Row : %3d", row_to_update);
@@ -146,7 +145,7 @@ int main(void) {
                 sprite_update_x(0);
                 camera.x -= PAS;
                 camera_tiles.x = camera.x >> 4;
-                sprite_update_tiles_left_from_one_sprite(0, camera_tiles.x);
+                //sprite_update_tiles_left_from_one_sprite(0, camera_tiles.x);
             }
         }
 
@@ -158,8 +157,6 @@ int main(void) {
                 sprite_update_x(0);
                 camera.x += PAS;
                 camera_tiles.x = camera.x >> 4;
-                snprintf(str, 10, "cam : %3d", camera_tiles.x);
-                ng_text(2, 3, 0, str);
                 sprite_update_tiles_right_from_one_sprite(0, camera_tiles.x);
             }
         }

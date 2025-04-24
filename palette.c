@@ -8,6 +8,7 @@ const u16 clut[][16] = {
     {0x8000, 0x0fff, 0x0333, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000},
 #include "sprites/tileset_map.pal" // Palette 1
 #include "sprites/hero.pal" // Palette 1
+#include "sprites/tileset_mario.pal" // Palette 3
 };
 
 const u16 palette_backup[][16] = {
@@ -15,6 +16,7 @@ const u16 palette_backup[][16] = {
     {0x8000, 0x0fff, 0x0333, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000},
 #include "sprites/tileset_map.pal" // Palette 1
 #include "sprites/hero.pal" // Palette 2
+#include "sprites/tileset_mario.pal" // Palette 3
 };
 
 const u16 paletes_from_tile[][2] = {
@@ -36,8 +38,8 @@ void init_palette() {
     for (u16 i=0;i<sizeof(clut)/2; i++) {
         MMAP_PALBANK1[i]=p[i];
     }
-    //*((volatile u16*)0x401ffe)=0x18bf;
-    *((volatile u16*)0x0000)=0x0000;
+    *((volatile u16*)0x401ffe)=0x18bf;
+    //*((volatile u16*)0x0000)=0x0000;
 }
 
 void setPaletteToBlack(int palettes[], int nb_elem) {

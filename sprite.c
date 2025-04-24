@@ -4,11 +4,11 @@
 sprite_t sprites[SPRITES_ALLOCATED] = {
     {
         // Tileset for the background - test d'affichage
-        .type = SPRITES_TYPE_BACKGROUND,
+        .type = SPRITES_TYPE_BACKGROUND1,
         .actif = 1,
         .sprite = 1,
         .first_tile = 256, // 208 tiles
-        .palette = 1,
+        .palette = 3,
         .width = 32,
         .height = 32,
         .picture_width = 20,
@@ -26,7 +26,6 @@ sprite_t sprites[SPRITES_ALLOCATED] = {
         .scrolling_actif = 1,
         .cache_pos_y_niveau0 = 0,
         .cache_width_pixels = 960, // Not used
-        .tmx = {},
     },
     {
         // Hero de Karim
@@ -52,20 +51,8 @@ sprite_t sprites[SPRITES_ALLOCATED] = {
         .scrolling_actif = 1,
         .cache_pos_y_niveau0 = 0,
         .cache_width_pixels = 64,
-        .tmx = {},
     },
 };
-
-void sprite_init_tmx(u16 sprite_indice)
-{
-    for (u16 j = 0; j < MAP_HEIGHT_TILES; j++)
-    {
-        for (u16 i = 0; i < MAP_WIDTH_TILES; i++)
-        {
-            sprites[sprite_indice].tmx[j][i] = tmx_decor[j][i];
-        }
-    }
-}
 
 /**
  * Affichage du sprite demandé
@@ -104,17 +91,17 @@ void sprite_init(u16 sprite_indice)
                 }
             }
         }
-        else if (sprites[sprite_indice].type == SPRITES_TYPE_BACKGROUND){
+        else if (sprites[sprite_indice].type == SPRITES_TYPE_BACKGROUND1){
 
-            // On initialise les tiles depuis le TMX : 60 colonnes et 60 lignes
-            for (u16 s = 0; s < sprites[sprite_indice].width; s++){
-                
+            // On initialise les tiles depuis le TMX tmx_mario
+            for (u16 s = 0; s < 20; s++)
+            {
                 *REG_VRAMMOD = 1;
                 *REG_VRAMADDR = ADDR_SCB1 + ((sprites[sprite_indice].sprite + s) << 6);
                 for (u16 v = sprites[sprite_indice].height; v > 0; v--)
                 {
                     u16 new_v = MAP_HEIGHT_TILES - v;
-                    *REG_VRAMRW = first_tile + sprites[sprite_indice].tmx[new_v][s] - 1;
+                    *REG_VRAMRW = first_tile + tmx_mario[new_v][s] - 1;
                     *REG_VRAMRW = (sprites[sprite_indice].palette << 8);
                     //*REG_VRAMRW = (palette_tmp << 8);
                 }
@@ -175,7 +162,18 @@ void sprite_update_tiles_left_from_one_sprite(u16 sprite_indice, u16 indice)
     for (u16 v = sprites[sprite_indice].height; v > 0; v--)
     {
         u16 new_v = MAP_HEIGHT_TILES - v;
-        *REG_VRAMRW = first_tile + sprites[sprite_indice].tmx[new_v][indice] - 1;
+        *REG_VRAMRW = first_tile + tmx_mario[new_v][indice] - 1;
+        *REG_VRAMRW = (sprites[sprite_indice].palette << 8);
+    }
+}
+
+void change_colonne(u16 sprite_indice, u16 sprite_to_change, u16 first_tile, u16 x)
+{
+    *REG_VRAMADDR = ADDR_SCB1 + ((sprites[sprite_indice].sprite + sprite_to_change) << 6);
+    for (u16 v = sprites[sprite_indice].height; v > 0; v--)
+    {
+        u16 new_v = MAP_HEIGHT_TILES - v;
+        *REG_VRAMRW = first_tile + tmx_mario[new_v][x] - 1;
         *REG_VRAMRW = (sprites[sprite_indice].palette << 8);
     }
 }
@@ -184,35 +182,40 @@ void sprite_update_tiles_left_from_one_sprite(u16 sprite_indice, u16 indice)
  * Permet d'actualiser à partir du TMX une colonne spécifique d'un sprite
  * et surtout hide tous les autres sprites après
  */
-void sprite_update_tiles_right_from_one_sprite(u16 sprite_indice, u16 indice)
+void sprite_update_tiles_right_from_one_sprite(u16 sprite, u16 indice)
 {
     char str[10];
     u16 first_tile = 0;
-    u16 spriteIndice, x;
-    x = indice + 20;
+    u16 sprite_to_change = 0;
 
-    spriteIndice = indice + 20;
+    sprite_to_change = indice + 20;
 
-    if (spriteIndice >= 32)
-    {
-        spriteIndice -= 32;
-    }
-
-    snprintf(str, 10, "ind : %3d", spriteIndice);
-    ng_text(2, 7, 0, str);
+    snprintf(str, 10, "ind : %3d", indice);
+    ng_text(2, 3, 0, str);
+    //snprintf(str, 10, "x : %3d", x);
+    //ng_text(2, 5, 0, str);
 
     // On prend en compte l'offset pour se positionner sur la portion de l'image complete
-    first_tile = sprites[sprite_indice].first_tile + sprites[sprite_indice].offset_x;
-    first_tile += sprites[sprite_indice].first_tile_with_offset_y;
+    first_tile = sprites[sprite].first_tile + sprites[sprite].offset_x;
+    first_tile += sprites[sprite].first_tile_with_offset_y;
 
     *REG_VRAMMOD = 1;
-    *REG_VRAMADDR = ADDR_SCB1 + ((sprites[sprite_indice].sprite + spriteIndice) << 6);
-    for (u16 v = sprites[sprite_indice].height; v > 0; v--)
+
+    if (indice >= 0 && indice < 12)
     {
-        u16 new_v = MAP_HEIGHT_TILES - v;
-        *REG_VRAMRW = first_tile + sprites[sprite_indice].tmx[new_v][x] - 1;
-        //*REG_VRAMRW = first_tile + 127 - 1;
-        *REG_VRAMRW = (sprites[sprite_indice].palette << 8);
+        change_colonne(sprite, sprite_to_change, first_tile, indice + 20);
+    }
+    else if (indice >= 12 && indice < 44)
+    {
+        change_colonne(sprite, sprite_to_change - 32, first_tile, indice + 20);
+    }
+    else if (indice >= 44 && indice < 76)
+    {
+        change_colonne(sprite, sprite_to_change - 64, first_tile, indice + 20);
+    }
+    else if (indice >= 76 && indice < 108)
+    {
+        change_colonne(sprite, sprite_to_change - 96, first_tile, indice + 20);
     }
 }
 

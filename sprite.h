@@ -41,7 +41,8 @@ typedef struct _sprite_t
     u16 cache_width_pixels; // Largeur du sprite en pixels (utilisé pour cacher le sprite s'il est en dehors de l'écran)
 
     // Remplissaage à partir d'un TMX
-    u16 tmx[45][60]; // 45 lignes de 60 colonnes
+    // u16 tmx[MAP_HEIGHT_TILES][MAP_WIDTH_TILES];
+    // tmx *StartTiles = tmx_mario[LevelTileStartIndexX][LevelTileStartIndexY]
 
 } sprite_t;
 

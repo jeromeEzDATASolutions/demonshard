@@ -22,7 +22,7 @@ if (file_exists($file)) {
     foreach ($array["layer"] as $key => $value) {
         if ( $value["@attributes"]["name"] != "test" ){
 
-            if ( $value["@attributes"]["name"] == "decor"){
+            if ( $value["@attributes"]["name"] == "mario"){
 
                 echo "#define MAP_WIDTH_TILES " . $value["@attributes"]["width"] . "\n";
                 echo "#define MAP_HEIGHT_TILES " . $value["@attributes"]["height"] . "\n";
