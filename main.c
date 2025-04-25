@@ -51,8 +51,10 @@
 int main(void) {
 
     char str[10];
+    u16 sprite_start_position;
 
-    typedef struct{
+    typedef struct
+    {
         s16 x, y; // Position de la caméra
     } Camera;
 
@@ -61,12 +63,20 @@ int main(void) {
     camera.x = 0;
     camera.y = 0;
 
+    u16 screen_x[20];
+    u16 screen_y[15];
+
     // Position of the camera in tiles
     Camera camera_tiles;
     camera_tiles.x = 0;
 
     ng_cls();
     init_palette();
+
+    for (u16 i = 0; i < 20; i++)
+    {
+        screen_x[i] = i;
+    }
 
     sprite_init(0);
     //sprite_init(1);
@@ -95,11 +105,23 @@ int main(void) {
                 // Update first tiles of each sprite
                 if (camera_tiles.y >= 0)
                 {
-                    if (camera_tiles.y >= 0 && camera_tiles.y < 16)
+                    sprite_start_position = camera_tiles.x;
+                    if (sprite_start_position >= 32)
                     {
-                        row_to_update = 32 - (camera_tiles.y + 15);
+                        sprite_start_position -= 32;
+                    }
+                    if (sprite_start_position >= 64)
+                    {
+                        sprite_start_position -= 64;
+                    }
+
+                    sprite_change_tile_in_a_colonne(0, screen_x[2], 20, 430);
+
+                    /*if (camera_tiles.y >= 0 && camera_tiles.y < 16)
+                    {
+                        row_to_update = 32 - (camera_tiles.y + 15) ;
                         for (u16 i = 0; i < sprites[0].width; i++){
-                            sprite_change_tile_in_a_colonne(0, i, row_to_update, tmx_mario[(MAP_HEIGHT_TILES - 32) + row_to_update][i]);
+                            sprite_change_tile_in_a_colonne(0 + sprite_start_position, i, row_to_update, 430);
                         }
                     }
                     else if (camera_tiles.y >= 16 && camera_tiles.y < 59){
@@ -114,14 +136,9 @@ int main(void) {
 
                         for (u16 i = 0; i < sprites[0].width; i++)
                         {
-                            sprite_change_tile_in_a_colonne(0, i, row_to_update, tmx_mario[(MAP_HEIGHT_TILES - 32) - (camera_tiles.y - 15)][i]);
+                            sprite_change_tile_in_a_colonne(0 + sprite_start_position, i, row_to_update, 430);
                         }
-
-                        /*snprintf(str, 10, "Row : %3d", row_to_update);
-                        ng_text(2, 3, 0, str);
-                        snprintf(str, 10, "Cty : %3d", camera_tiles.y);
-                        ng_text(2, 5, 0, str);*/
-                    }
+                    }*/
                 }
             }
         }
@@ -157,9 +174,35 @@ int main(void) {
                 sprite_update_x(0);
                 camera.x += PAS;
                 camera_tiles.x = camera.x >> 4;
+
+                //if ( (camera_tiles.x & 15) == 0 ){ // Divisible par 16
+                    //snprintf(str, 10, "DIV : %3d", camera_tiles.x); ng_text(2, 9, 0, str);
+                //}
+
+                u16 Offset = 0;
+
+                if (camera_tiles.x >= 32 && camera_tiles.x < 64){
+                    Offset = 32;
+                }
+                else if (camera_tiles.x >= 64 && camera_tiles.x < 96){
+                    Offset = 64;
+                }
+
+                for (u16 j = 0; j < 20; j++)
+                {
+                    screen_x[j] = j + camera_tiles.x - Offset;
+                }
+
                 sprite_update_tiles_right_from_one_sprite(0, camera_tiles.x);
             }
         }
+
+        snprintf(str, 10, "TX : %3d", camera_tiles.x);
+        ng_text(2, 3, 0, str);
+        snprintf(str, 10, "TY : %3d", camera_tiles.y);
+        ng_text(2, 5, 0, str);
+        snprintf(str, 10, "SX : %3d", screen_x[0]);
+        ng_text(2, 7, 0, str);
 
         ng_wait_vblank();
     }

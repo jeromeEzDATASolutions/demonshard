@@ -174,6 +174,7 @@ void change_colonne(u16 sprite_indice, u16 sprite_to_change, u16 first_tile, u16
     {
         u16 new_v = MAP_HEIGHT_TILES - v;
         *REG_VRAMRW = first_tile + tmx_mario[new_v][x] - 1;
+        //*REG_VRAMRW = first_tile + tmx_mario[9][4] - 1;
         *REG_VRAMRW = (sprites[sprite_indice].palette << 8);
     }
 }
@@ -190,10 +191,8 @@ void sprite_update_tiles_right_from_one_sprite(u16 sprite, u16 indice)
 
     sprite_to_change = indice + 20;
 
-    snprintf(str, 10, "ind : %3d", indice);
-    ng_text(2, 3, 0, str);
-    //snprintf(str, 10, "x : %3d", x);
-    //ng_text(2, 5, 0, str);
+    // snprintf(str, 10, "ind : %3d", indice);
+    // ng_text(2, 3, 0, str);
 
     // On prend en compte l'offset pour se positionner sur la portion de l'image complete
     first_tile = sprites[sprite].first_tile + sprites[sprite].offset_x;
